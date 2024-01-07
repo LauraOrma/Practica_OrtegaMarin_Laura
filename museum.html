@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Experiencia Egipto</title>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
+    <script>
+        AFRAME.registerComponent('toggle-bastet', {
+            init: function () {
+                let el = this.el;
+                let light = document.getElementById('bastet-light');
+                let sound = document.getElementById('bastet-sound');
+                let infoPanel = document.getElementById('info-panel');
+
+                el.addEventListener('click', function () {
+
+                    //Flag para visibilidad del panel de información
+                    let isVisible = infoPanel.getAttribute('visible');
+                    infoPanel.setAttribute('visible', !isVisible);
+
+                    //Apagar encender luz utilizando el atributo intensidad
+                    let intensity = light.getAttribute('light').intensity;
+                    light.setAttribute('light', 'intensity', intensity > 0 ? 0 : 1);
+
+                    // Reproducción del sonido
+                    sound.components.sound.playSound();
+                });
+            }
+        });
+
+        AFRAME.registerComponent('toggle-ropaje', {
+            init: function () {
+                let el = this.el;
+                let light = document.getElementById('ropaje-light');
+                let sound = document.getElementById('ropaje-sound');
+                let infoPanel = document.getElementById('ropaje-info-panel');
+
+                el.addEventListener('click', function () {
+
+                    //Flag para visibilidad del panel de información
+                    let isVisible = infoPanel.getAttribute('visible');
+                    infoPanel.setAttribute('visible', !isVisible);
+
+                    //Apagar encender luz utilizando el atributo intensidad
+                    let intensity = light.getAttribute('light').intensity;
+                    light.setAttribute('light', 'intensity', intensity > 0 ? 0 : 1);
+
+                    // Reproducción del sonido
+                    sound.components.sound.playSound();
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+<a-scene environment="preset: egypt">
+    <a-assets>
+        <!-- Assets para geometría (obj) y para material (mtl) del museo-->
+        <a-asset-item id="museum" src="resources/Scene.obj"></a-asset-item>
+        <a-asset-item id="museum-mtl" src="resources/Scene.mtl"></a-asset-item>
+
+        <!-- Assets para geometría (obj) y para material (mtl) de Bastet -->
+        <a-asset-item id="bastet" src="resources/Bastet.obj"></a-asset-item>
+        <a-asset-item id="bastet-mtl" src="resources/Bastet.mtl"></a-asset-item>
+        <img id="bastet-texture" src="resources/Bastet.png">
+
+        <!-- Assets para geometría (obj) y para material (mtl) de vestimenta -->
+        <a-asset-item id="ropaje" src="resources/chemise_egypte_-_CleanUp_-_LowPoly.obj"></a-asset-item>
+        <a-asset-item id="ropaje-mtl" src="resources/chemise_egypte_-_CleanUp_-_LowPoly.mtl"></a-asset-item>
+        <img id="ropaje-texture" src="resources/chemise_egypte_-_CleanUp_-_LowPoly_u1_v1.jpg">
+
+        <!--Audios-->
+        <audio id="clic-bastet" src="resources/sounds/bastet-sound.mp3"></audio>
+        <audio id="clic-ropaje" src="resources/sounds/ropaje-sound.mp3"></audio>
+
+    </a-assets>
+
+    <!--Museo-->
+    <a-entity obj-model="obj: #museum; mtl: #museum-mtl"
+              material="color: red; opacity: 1.0"
+              position="3 0.2 -18"
+              rotation="0 -90 0"
+              scale="0.8 0.8 0.8">
+    </a-entity>
+
+    <!--Bastet-->
+    <a-sphere position="8.5 1.5 -21.75" radius="0.5" color="#FFC65D" toggle-bastet>
+        <a-entity id="orb-light" light="type: point; intensity: 0.5; distance: 10; decay: 1" position="0 0 0"></a-entity>
+    </a-sphere>
+
+    <a-entity id="bastet" obj-model="obj: #bastet; mtl: #bastet-mtl"
+              position="9 2.25 -18.25"
+              rotation="-30 200 20"
+              scale="0.1 0.1 0.1">
+        <a-animation attribute="position" direction="alternate" dur="2000" to="9 2.5 -18.25" repeat="indefinite"
+                     easing="linear"></a-animation>
+    </a-entity>
+
+    <a-entity id="bastet-sound" sound="src: #clic-bastet"></a-entity>
+
+    <a-plane id="info-panel" visible="false" position="8 2 -19" rotation="0 -90 0" width="4" height="2" color="#000"
+             opacity="0.8">
+        <a-text value="Bastet, diosa gato del antiguo Egipto, es hija del dios sol Ra. Representada como una diosa felina, era adorada y considerada sagrada."
+                align="center" position="0 0 0" rotation="0 0 0" width="3" wrapCount="24">
+        </a-text>
+    </a-plane>
+
+    <a-entity id="bastet-light"
+              light="type: point; color: #FFF; intensity: 0"
+              position="9 8 -20">
+    </a-entity>
+
+    <!--Ropaje-->
+
+    <a-sphere id="ropaje-orb" position="-4.5 1 -24" radius="0.25" color="#FFC65D" toggle-ropaje>
+        <a-entity id="ropaje-light" light="type: point; intensity: 0; distance: 10; decay: 1" position="0 0 0"></a-entity>
+    </a-sphere>
+
+    <a-entity id="ropaje-sound" sound="src: #clic-ropaje"></a-entity>
+
+    <a-entity id="ropaje" obj-model="obj: #ropaje; mtl: #ropaje-mtl"
+              position="-5.5 0.6 -25"
+              rotation="-90 0 90"
+              scale="0.09 0.09 0.09">
+        <a-animation attribute="position" direction="alternate" dur="1000" to="-5.5 0.65 -25" repeat="indefinite"
+                     easing="linear"></a-animation>
+    </a-entity>
+    <a-plane id="ropaje-info-panel" visible="false" position="-2.5 3 -26" rotation="0 -10 0" width="4" height="2" color="#000" opacity="0.8">
+        <a-text value="La vestimenta de los esclavos en el antiguo Egipto era simple y funcional, reflejando su posicion social y las necesidades del clima del desierto."
+                align="center" position="0 0 0.1" rotation="0 0 0" width="3" wrapCount="24">
+        </a-text>
+    </a-plane>
+
+
+
+    <a-camera>
+        <a-cursor color="#ffffff"></a-cursor>
+    </a-camera>
+
+</a-scene>
+</body>
+</html>
