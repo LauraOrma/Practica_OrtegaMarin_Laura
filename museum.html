@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Experiencia Egipto</title>
+    <title>Museo de curiosidades egipcias</title>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
     <script>
@@ -11,6 +11,7 @@
                 let light = document.getElementById('bastet-light');
                 let sound = document.getElementById('bastet-sound');
                 let infoPanel = document.getElementById('info-panel');
+                let subtitles = document.getElementById('subtitulos');
 
                 el.addEventListener('click', function () {
 
@@ -24,6 +25,8 @@
 
                     // Reproducción del sonido
                     sound.components.sound.playSound();
+
+                    subtitles.setAttribute('text', 'value', '¿Que? ¿Una diosa con forma de gato?');
                 });
             }
         });
@@ -34,6 +37,7 @@
                 let light = document.getElementById('ropaje-light');
                 let sound = document.getElementById('ropaje-sound');
                 let infoPanel = document.getElementById('ropaje-info-panel');
+                let subtitulo = document.getElementById('subtitulos');
 
                 el.addEventListener('click', function () {
 
@@ -47,6 +51,30 @@
 
                     // Reproducción del sonido
                     sound.components.sound.playSound();
+
+                    subtitulo.setAttribute('text', 'value', 'Vale, esto da un poco de miedo...');
+                });
+            }
+        });
+
+        AFRAME.registerComponent('toggle-caja', {
+            init: function () {
+                let el = this.el;
+                let light = document.getElementById('caja-light');
+                let sound = document.getElementById('caja-sound');
+                let subtitulo = document.getElementById('subtitulos');
+
+
+                el.addEventListener('click', function () {
+
+                    //Apagar encender luz utilizando el atributo intensidad
+                    let intensity = light.getAttribute('light').intensity;
+                    light.setAttribute('light', 'intensity', intensity > 0 ? 0 : 1);
+
+                    // Reproducción del sonido
+                    sound.components.sound.playSound();
+
+                    subtitulo.setAttribute('text', 'value', '(Una voz resuena en tu cabeza) Hay cosas que es mejor no saber...');
                 });
             }
         });
@@ -69,11 +97,20 @@
         <a-asset-item id="ropaje-mtl" src="resources/chemise_egypte_-_CleanUp_-_LowPoly.mtl"></a-asset-item>
         <img id="ropaje-texture" src="resources/chemise_egypte_-_CleanUp_-_LowPoly_u1_v1.jpg">
 
+        <!-- Assets para geometría (obj) y para material (mtl) de caja -->
+        <a-asset-item id="caja" src="resources/pyramid2.obj"></a-asset-item>
+        <a-asset-item id="caja-mtl" src="resources/pyramid2.mtl"></a-asset-item>
+        <img id="caja-texture" src="resources/pyramid2_u1_v1.png">
+
         <!--Audios-->
+        <audio id="clic-ambiente" src="resources/sounds/ambiente.mp3"></audio>
         <audio id="clic-bastet" src="resources/sounds/bastet-sound.mp3"></audio>
         <audio id="clic-ropaje" src="resources/sounds/ropaje-sound.mp3"></audio>
+        <audio id="clic-caja" src="resources/sounds/monster.mp3"></audio>
 
     </a-assets>
+
+    <a-entity id="ambient-sound" sound="src: #clic-ambiente; autoplay: true; loop: true; volume: 0.4"></a-entity>
 
     <!--Museo-->
     <a-entity obj-model="obj: #museum; mtl: #museum-mtl"
@@ -131,10 +168,27 @@
         </a-text>
     </a-plane>
 
+    <!--Caja-->
+
+    <a-entity id="caja-sound" sound="src: #clic-caja; volume: 1; distanceModel: linear; rolloffFactor: 0.1"></a-entity>
+
+    <a-sphere id="caja-orb" position="1.5 1 -34.25" radius="0.5" color="#FFC65D" toggle-caja>
+        <a-entity id="caja-light" light="type: point; intensity: 0; distance: 10; decay: 1" position="0 2 0"></a-entity>
+    </a-sphere>
+
+    <a-entity id="caja" obj-model="obj: #caja; mtl: #caja-mtl"
+              position="4 1 -34.25"
+              rotation="-90 0 0"
+              scale="0.2 0.2 0.2">
+
+        <a-animation attribute="position" direction="alternate" dur="3000" to="4 1.5 -34.25" repeat="indefinite"
+                     easing="linear"></a-animation>
+    </a-entity>
 
 
     <a-camera>
         <a-cursor color="#ffffff"></a-cursor>
+        <a-entity id="subtitulos" position="0 -0.5 -1" text="value: ; color: #FFF; align: center; width: 1.3, wrapCount: 4"></a-entity>
     </a-camera>
 
 </a-scene>
